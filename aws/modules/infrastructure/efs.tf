@@ -86,4 +86,5 @@ resource "kubernetes_manifest" "efs_persistant_volume_claim" {
       }
     }
   }
+  depends_on = [module.eks]
 }
