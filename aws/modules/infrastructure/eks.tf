@@ -74,7 +74,7 @@ module "eks_efs_csi_driver" {
 
 resource "helm_release" "aws_efs_pvc" {
   name       = "aws-efs-pvc"
-  chart      = "./aws-efs-pvc"
+  chart      = "${path.module}/aws-efs-pvc"
 
   set {
     name = "efs_id"
