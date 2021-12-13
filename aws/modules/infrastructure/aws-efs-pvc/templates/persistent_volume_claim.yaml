@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-claim
+  namespace: "{{ .Values.namespace }}"
+spec:
+  storageClassName: "efs-dsc"
+  accessModes:
+  - "ReadWriteMany"
+  resources:
+    requests:
+      storage: "5Gi" # Not actually used - see https://aws.amazon.com/blogs/containers/introducing-efs-csi-dynamic-provisioning/

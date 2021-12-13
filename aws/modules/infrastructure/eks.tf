@@ -56,7 +56,8 @@ resource "kubernetes_namespace" "meltano" {
   }
   depends_on = [module.eks]
 }
-module "eks-efs-csi-driver" {
+
+module "eks_efs_csi_driver" {
   source  = "DNXLabs/eks-efs-csi-driver/aws"
   version = "0.1.4"
 
@@ -64,4 +65,23 @@ module "eks-efs-csi-driver" {
   cluster_identity_oidc_issuer     = module.eks.cluster_oidc_issuer_url
   cluster_identity_oidc_issuer_arn = module.eks.oidc_provider_arn
   create_namespace                 = false
+  create_storage_class             = false
+
+  depends_on = [
+    module.eks
+  ]
+}
+
+resource "helm_release" "aws_efs_pvc" {
+  name       = "aws-efs-pvc"
+  chart      = "./aws-efs-pvc"
+
+  set {
+    name = "efs_id"
+    value = module.efs.id
+  }
+
+  depends_on = [
+    module.efs, module.eks_efs_csi_driver
+  ]
 }
