@@ -26,19 +26,19 @@ module "ecr_meltano" {
 
 locals {
   airflow_registry = {
-    registry_id = module.ecr_airflow.registry_id
-    repository_arn = module.ecr_airflow.repository_arn
+    registry_id        = module.ecr_airflow.registry_id
+    repository_arn     = module.ecr_airflow.repository_arn
     repository_arn_map = module.ecr_airflow.repository_arn_map
-    repository_name = module.ecr_airflow.repository_name
-    repository_url = module.ecr_airflow.repository_url
+    repository_name    = module.ecr_airflow.repository_name
+    repository_url     = module.ecr_airflow.repository_url
     repository_url_map = module.ecr_airflow.repository_url_map
   }
   meltano_registry = {
-    registry_id = module.ecr_meltano.registry_id
-    repository_arn = module.ecr_meltano.repository_arn
+    registry_id        = module.ecr_meltano.registry_id
+    repository_arn     = module.ecr_meltano.repository_arn
     repository_arn_map = module.ecr_meltano.repository_arn_map
-    repository_name = module.ecr_meltano.repository_name
-    repository_url = module.ecr_meltano.repository_url
+    repository_name    = module.ecr_meltano.repository_name
+    repository_url     = module.ecr_meltano.repository_url
     repository_url_map = module.ecr_meltano.repository_url_map
   }
 }

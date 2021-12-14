@@ -73,11 +73,11 @@ module "eks_efs_csi_driver" {
 }
 
 resource "helm_release" "aws_efs_pvc" {
-  name       = "aws-efs-pvc"
-  chart      = "${path.module}/aws-efs-pvc"
+  name  = "aws-efs-pvc"
+  chart = "${path.module}/aws-efs-pvc"
 
   set {
-    name = "efs_id"
+    name  = "efs_id"
     value = module.efs.id
   }
 
@@ -86,46 +86,46 @@ resource "helm_release" "aws_efs_pvc" {
   ]
 }
 
-locals = {
+locals {
   kubernetes_cluster = {
-    namespace = var.namespace
-    cloudwatch_log_group_arn = module.eks.cloudwatch_log_group_arn
-    cloudwatch_log_group_name = module.eks.cloudwatch_log_group_name
-    cluster_arn = module.eks.cluster_arn
-    cluster_ca_certificate = data.aws_eks_cluster.eks.certificate_authority[0].data
-    cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data
-    cluster_endpoint = module.eks.cluster_endpoint
-    cluster_iam_role_arn = module.eks.cluster_iam_role_arn
-    cluster_iam_role_name = module.eks.cluster_iam_role_name
-    cluster_id = module.eks.cluster_id
-    cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
-    cluster_primary_security_group_id = module.eks.cluster_primary_security_group_id
-    cluster_security_group_id = module.eks.cluster_security_group_id
-    cluster_token = data.aws_eks_cluster_auth.eks.token
-    cluster_version = module.eks.cluster_version
-    config_map_aws_auth = module.eks.config_map_aws_auth
-    fargate_iam_role_arn = module.eks.fargate_iam_role_arn
-    fargate_iam_role_name = module.eks.fargate_iam_role_name
-    fargate_profile_arns = module.eks.fargate_profile_arns
-    fargate_profile_ids = module.eks.fargate_profile_ids
-    kubeconfig = module.eks.kubeconfig
-    kubeconfig_filename = module.eks.kubeconfig_filename
-    node_groups = module.eks.node_groups
-    oidc_provider_arn = module.eks.oidc_provider_arn
+    namespace                                        = var.namespace
+    cloudwatch_log_group_arn                         = module.eks.cloudwatch_log_group_arn
+    cloudwatch_log_group_name                        = module.eks.cloudwatch_log_group_name
+    cluster_arn                                      = module.eks.cluster_arn
+    cluster_ca_certificate                           = data.aws_eks_cluster.eks.certificate_authority[0].data
+    cluster_certificate_authority_data               = module.eks.cluster_certificate_authority_data
+    cluster_endpoint                                 = module.eks.cluster_endpoint
+    cluster_iam_role_arn                             = module.eks.cluster_iam_role_arn
+    cluster_iam_role_name                            = module.eks.cluster_iam_role_name
+    cluster_id                                       = module.eks.cluster_id
+    cluster_oidc_issuer_url                          = module.eks.cluster_oidc_issuer_url
+    cluster_primary_security_group_id                = module.eks.cluster_primary_security_group_id
+    cluster_security_group_id                        = module.eks.cluster_security_group_id
+    cluster_token                                    = data.aws_eks_cluster_auth.eks.token
+    cluster_version                                  = module.eks.cluster_version
+    config_map_aws_auth                              = module.eks.config_map_aws_auth
+    fargate_iam_role_arn                             = module.eks.fargate_iam_role_arn
+    fargate_iam_role_name                            = module.eks.fargate_iam_role_name
+    fargate_profile_arns                             = module.eks.fargate_profile_arns
+    fargate_profile_ids                              = module.eks.fargate_profile_ids
+    kubeconfig                                       = module.eks.kubeconfig
+    kubeconfig_filename                              = module.eks.kubeconfig_filename
+    node_groups                                      = module.eks.node_groups
+    oidc_provider_arn                                = module.eks.oidc_provider_arn
     security_group_rule_cluster_https_worker_ingress = module.eks.security_group_rule_cluster_https_worker_ingress
-    worker_iam_instance_profile_arns = module.eks.worker_iam_instance_profile_arns
-    worker_iam_instance_profile_names = module.eks.worker_iam_instance_profile_names
-    worker_iam_role_arn = module.eks.worker_iam_role_arn
-    worker_iam_role_name = module.eks.worker_iam_role_name
-    worker_security_group_id = module.eks.worker_security_group_id
-    workers_asg_arns = module.eks.workers_asg_arns
-    workers_asg_names = module.eks.workers_asg_names
-    workers_default_ami_id = module.eks.workers_default_ami_id
-    workers_default_ami_id_windows = module.eks.workers_default_ami_id_windows
-    workers_launch_template_arns = module.eks.workers_launch_template_arns
-    workers_launch_template_ids = module.eks.workers_launch_template_ids
-    workers_launch_template_latest_versions = module.eks.workers_launch_template_latest_versions
-    workers_user_data = module.eks.workers_user_data
+    worker_iam_instance_profile_arns                 = module.eks.worker_iam_instance_profile_arns
+    worker_iam_instance_profile_names                = module.eks.worker_iam_instance_profile_names
+    worker_iam_role_arn                              = module.eks.worker_iam_role_arn
+    worker_iam_role_name                             = module.eks.worker_iam_role_name
+    worker_security_group_id                         = module.eks.worker_security_group_id
+    workers_asg_arns                                 = module.eks.workers_asg_arns
+    workers_asg_names                                = module.eks.workers_asg_names
+    workers_default_ami_id                           = module.eks.workers_default_ami_id
+    workers_default_ami_id_windows                   = module.eks.workers_default_ami_id_windows
+    workers_launch_template_arns                     = module.eks.workers_launch_template_arns
+    workers_launch_template_ids                      = module.eks.workers_launch_template_ids
+    workers_launch_template_latest_versions          = module.eks.workers_launch_template_latest_versions
+    workers_user_data                                = module.eks.workers_user_data
     storage = {
       logs_storage_claim_name = "efs-claim"
     }

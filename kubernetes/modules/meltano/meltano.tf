@@ -13,12 +13,12 @@ EOT
 }
 
 resource "helm_release" "meltano" {
-  name        = "meltano"
-  repository  = "https://meltano.gitlab.io/infra/helm-meltano/meltano"
-  chart       = "meltano"
-  namespace   = "meltano"
-  version     = "0.1.1"
-  wait        = false
+  name       = "meltano"
+  repository = "https://meltano.gitlab.io/infra/helm-meltano/meltano"
+  chart      = "meltano"
+  namespace  = "meltano"
+  version    = "0.1.1"
+  wait       = false
   values = [
     file("${path.module}/meltano.values.yml"),
     local.meltano_values

@@ -13,7 +13,7 @@ variable "kubernetes_cluster_token" {
 
 variable "kubernetes_namespace" {
   description = "Kubernetes namespace for Meltano and Airflow."
-  default = "meltano"
+  default     = "meltano"
 }
 
 variable "aws_region" {
@@ -31,11 +31,11 @@ variable "meltano_image_repository_url" {
 
 variable "meltano_image_tag" {
   description = "Meltano Docker image tag."
-  default = "latest"
+  default     = "latest"
 }
 
 variable "meltano_env_file" {
-  type = string
+  type        = string
   description = "Meltano .env file contents."
 }
 
@@ -50,7 +50,7 @@ variable "airflow_webserver_secret_key" {
 
 variable "airflow_meltano_project_root" {
   description = "Meltano project root in Airflow container."
-  default = "/opt/airflow/meltano"
+  default     = "/opt/airflow/meltano"
 }
 
 variable "airflow_image_repository_url" {
@@ -59,7 +59,7 @@ variable "airflow_image_repository_url" {
 
 variable "airflow_image_tag" {
   description = "Airflow Docker image tag."
-  default = "latest"
+  default     = "latest"
 }
 
 variable "airflow_db_host" {
@@ -68,7 +68,7 @@ variable "airflow_db_host" {
 
 variable "airflow_db_user" {
   description = "Airflow database username."
-  default = "airflow"
+  default     = "airflow"
 }
 
 variable "airflow_db_password" {
@@ -77,20 +77,20 @@ variable "airflow_db_password" {
 
 variable "airflow_db_database" {
   description = "Airflow database name."
-  default = "airflow"
+  default     = "airflow"
 }
 
 variable "airflow_db_port" {
   description = "Airflow database port."
-  default = "5432"
+  default     = "5432"
 }
 
 variable "airflow_db_protocol" {
   description = "Airflow database protocol."
-  default = "postgresql"
+  default     = "postgresql"
 }
 
 variable "airflow_logs_pvc_claim_name" {
   description = "Airflow logs Persistent Volume Claim name."
-  default = "efs-claim"
+  default     = "efs-claim"
 }

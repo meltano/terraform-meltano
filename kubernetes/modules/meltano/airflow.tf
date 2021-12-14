@@ -71,7 +71,7 @@ resource "helm_release" "airflow" {
   version     = "1.3.0"
   max_history = 10
   wait        = false
-  values      = [
+  values = [
     file("${path.module}/airflow.values.yaml"),
     local.airflow_values
   ]
