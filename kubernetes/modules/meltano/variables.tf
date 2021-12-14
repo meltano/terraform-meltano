@@ -91,6 +91,10 @@ variable "airflow_db_protocol" {
   default     = "postgresql"
 }
 
+variable "airflow_db_uri" {
+  description = "Airflow database connection string."
+}
+
 variable "airflow_logs_pvc_claim_name" {
   description = "Airflow logs Persistent Volume Claim name."
   default     = "efs-claim"

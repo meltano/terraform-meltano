@@ -5,12 +5,12 @@ fernetKey: ${var.airflow_fernet_key}
 webserverSecretKey: ${var.airflow_webserver_secret_key}
 
 extraEnv: |
-- name: AWS_REGION
-  value: ${var.aws_region}
-- name: AWS_DEFAULT_REGION
-  value: ${var.aws_region}
-- name: MELTANO_PROJECT_ROOT
-  value: ${var.airflow_meltano_project_root}
+  - name: AWS_REGION
+    value: ${var.aws_region}
+  - name: AWS_DEFAULT_REGION
+    value: ${var.aws_region}
+  - name: MELTANO_PROJECT_ROOT
+    value: ${var.airflow_meltano_project_root}
 
 images:
   airflow:
@@ -38,23 +38,23 @@ extraSecrets:
       file: "${base64encode(var.meltano_env_file)}"
 
 secret:
-- envName: MELTANO_DATABASE_URI
-  secretName: meltano-database-uri
-  secretKey: uri
+  - envName: MELTANO_DATABASE_URI
+    secretName: meltano-database-uri
+    secretKey: uri
 
 workers:
   extraVolumes:
-  - name: meltano-env-file
-    secret:
-      secretName: meltano-env-file
-      items:
-        key: file
-        path: ".env"
+    - name: meltano-env-file
+      secret:
+        secretName: meltano-env-file
+        items:
+          key: file
+          path: ".env"
   extraVolumeMounts:
-  - name: meltano-env-file
-    mountPath: "${var.airflow_meltano_project_root}/.env"
-    subPath: ".env"
-    readOnly: true
+    - name: meltano-env-file
+      mountPath: "${var.airflow_meltano_project_root}/.env"
+      subPath: ".env"
+      readOnly: true
 
 logs:
   persistence:
@@ -81,4 +81,5 @@ resource "helm_release" "airflow" {
     name  = "timestamp"
     value = timestamp()
   }
+  # depends_on = [helm_release.database_admin]
 }

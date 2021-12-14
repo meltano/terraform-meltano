@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: airflow-init-db
+spec:
+  template:
+    spec:
+      containers:
+      - name: airflow-init-db
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        args: ["bash", "-c", "airflow db reset -y && airflow db init"]
+        env:
+          - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+            value: {{ .Values.airflow.sql_alchemy_conn }}
+      restartPolicy: Never
+  backoffLimit: 4

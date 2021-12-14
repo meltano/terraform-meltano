@@ -29,4 +29,5 @@ resource "helm_release" "meltano" {
     name  = "timestamp"
     value = timestamp()
   }
+  # depends_on = [helm_release.database_admin]
 }
