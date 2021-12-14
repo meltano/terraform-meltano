@@ -119,6 +119,7 @@ locals {
     user     = module.airflow_db.db_instance_username
     password = module.airflow_db.db_instance_password
     database = module.airflow_db.db_instance_name
+    protocol = "postgresql"
     url      = "postgresql://${module.airflow_db.db_instance_username}:${module.airflow_db.db_instance_password}@${module.airflow_db.db_instance_endpoint}/${module.airflow_db.db_instance_name}"
   }
   meltano_database = {
@@ -127,6 +128,7 @@ locals {
     user     = module.db.db_instance_username
     password = module.db.db_instance_password
     database = module.db.db_instance_name
+    protocol = "postgresql"
     url      = "postgresql://${module.db.db_instance_username}:${module.db.db_instance_password}@${module.db.db_instance_endpoint}/${module.db.db_instance_name}"
   }
 }
