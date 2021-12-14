@@ -5,7 +5,7 @@ module "efs" {
   namespace = "m5o"
   stage     = "prod"
   name      = "meltano"
-  region    = "us-east-1"
+  region    = var.aws_region
   vpc_id    = module.vpc.vpc_id
   subnets   = module.vpc.private_subnets
   zone_id   = []

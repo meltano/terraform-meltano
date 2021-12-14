@@ -18,6 +18,7 @@ variable "kubernetes_namespace" {
 
 variable "aws_region" {
   description = "AWS Region for default env vars."
+  default = "us-east-1"
 }
 
 # Meltano Variables
