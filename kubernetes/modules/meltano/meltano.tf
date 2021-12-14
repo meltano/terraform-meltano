@@ -20,7 +20,7 @@ resource "helm_release" "meltano" {
   version    = "0.1.1"
   wait       = false
   values = [
-    file("${path.module}/meltano.values.yml"),
+    file("${path.module}/meltano.values.yaml"),
     local.meltano_values
   ]
   # This is not a chart value, but just a way to trick helm_release into running every time.
