@@ -88,7 +88,7 @@ resource "helm_release" "aws_efs_pvc" {
 
 locals {
   kubernetes_cluster = {
-    namespace                                        = var.namespace
+    namespace                                        = var.kubernetes_namespace
     cloudwatch_log_group_arn                         = module.eks.cloudwatch_log_group_arn
     cloudwatch_log_group_name                        = module.eks.cloudwatch_log_group_name
     cluster_arn                                      = module.eks.cluster_arn
