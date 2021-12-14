@@ -4,7 +4,7 @@ locals {
 fernetKey: ${var.airflow_fernet_key}
 webserverSecretKey: ${var.airflow_webserver_secret_key}
 
-extraEnv:
+extraEnv: |
 - name: AWS_REGION
   value: ${var.aws_region}
 - name: AWS_DEFAULT_REGION

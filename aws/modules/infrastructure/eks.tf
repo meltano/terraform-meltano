@@ -92,7 +92,6 @@ locals {
     cloudwatch_log_group_arn                         = module.eks.cloudwatch_log_group_arn
     cloudwatch_log_group_name                        = module.eks.cloudwatch_log_group_name
     cluster_arn                                      = module.eks.cluster_arn
-    cluster_ca_certificate                           = data.aws_eks_cluster.eks.certificate_authority[0].data
     cluster_certificate_authority_data               = module.eks.cluster_certificate_authority_data
     cluster_endpoint                                 = module.eks.cluster_endpoint
     cluster_iam_role_arn                             = module.eks.cluster_iam_role_arn
@@ -101,7 +100,6 @@ locals {
     cluster_oidc_issuer_url                          = module.eks.cluster_oidc_issuer_url
     cluster_primary_security_group_id                = module.eks.cluster_primary_security_group_id
     cluster_security_group_id                        = module.eks.cluster_security_group_id
-    cluster_token                                    = data.aws_eks_cluster_auth.eks.token
     cluster_version                                  = module.eks.cluster_version
     config_map_aws_auth                              = module.eks.config_map_aws_auth
     fargate_iam_role_arn                             = module.eks.fargate_iam_role_arn
