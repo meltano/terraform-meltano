@@ -1,46 +1,50 @@
 
 locals {
   airflow_values = <<EOT
-fernetKey: ${var.airflow_fernet_key}
-webserverSecretKey: ${var.airflow_webserver_secret_key}
 
-extraEnv: |
+fernetKey: "${var.airflow_fernet_key}"
+webserverSecretKey: "${var.airflow_webserver_secret_key}"
+
+extraEnv: |-
   - name: AWS_REGION
-    value: ${var.aws_region}
+    value: "${var.aws_region}"
   - name: AWS_DEFAULT_REGION
-    value: ${var.aws_region}
+    value: "${var.aws_region}"
   - name: MELTANO_PROJECT_ROOT
-    value: ${var.airflow_meltano_project_root}
+    value: "${var.airflow_meltano_project_root}"
 
 images:
   airflow:
-    repository: ${var.airflow_image_repository_url}
-    tag: ${var.airflow_image_tag}
+    repository: "${var.airflow_image_repository_url}"
+    tag: "${var.airflow_image_tag}"
+    pullPolicy: Always
   pod_template:
-    repository: ${var.airflow_image_repository_url}
-    tag: ${var.airflow_image_tag}
+    repository: "${var.airflow_image_repository_url}"
+    tag: "${var.airflow_image_tag}"
+    pullPolicy: Always
 
 data:
   metadataConnection:
-    host: ${var.airflow_db_host}
-    user: ${var.airflow_db_user}
-    pass: ${var.airflow_db_password}
-    db: ${var.airflow_db_database}
+    host: "${var.airflow_db_host}"
+    user: "${var.airflow_db_user}"
+    pass: "${var.airflow_db_password}"
+    db: "${var.airflow_db_database}"
     port: ${var.airflow_db_port}
-    protocol: ${var.airflow_db_protocol}
+    protocol: "${var.airflow_db_protocol}"
+    sslmode: disable
 
 extraSecrets:
   meltano-database-uri:
-    data: |
-      uri: "${base64encode(var.meltano_db_uri)}"
+    stringData: |-
+      MELTANO_DATABASE_URI: "${var.meltano_db_uri}"
   meltano-env-file:
-    data: |
+    data: |-
       file: "${base64encode(var.meltano_env_file)}"
 
-secret:
-  - envName: MELTANO_DATABASE_URI
-    secretName: meltano-database-uri
-    secretKey: uri
+# secret:
+#   - envName: MELTANO_DATABASE_URI
+#     secretName: meltano-database-uri
+#     secretKey: uri
 
 workers:
   extraVolumes:
@@ -59,7 +63,8 @@ workers:
 logs:
   persistence:
     enabled: true
-    existingClaim: ${var.airflow_logs_pvc_claim_name}
+    existingClaim: "${var.airflow_logs_pvc_claim_name}"
+
 EOT
 }
 

@@ -1,8 +1,8 @@
 # Airflow version (Used to make some decisions based on Airflow Version being deployed)
-airflowVersion: "2.2.1"
+airflowVersion: "2.2.2"
 
-uid: 50000
-gid: 0
+# uid: 50000
+# gid: 50000
 
 executor: KubernetesExecutor
 
@@ -13,21 +13,15 @@ ingress:
       # No option in current Helm chart to use ingressClassName yet
       kubernetes.io/ingress.class: ingress-nginx-internal
 
-images:
-  airflow:
-    pullPolicy: Always
-  pod_template:
-    pullPolicy: Always
-
 postgresql:
   enabled: false
 
 webserver:
   replicas: 1
-  args: ["bash", "-c", "exec airflow webserver -d"] # airflow webserver only runs in debug mode. probably a permissions thing, todo with write access to the airflow home folder
+  args: ["bash", "-c", "exec airflow webserver -d"]
 
   webserverConfig: |-
-      AUTH_ROLE_PUBLIC = 'Admin'
+    AUTH_ROLE_PUBLIC = 'Admin'
 
   serviceAccount:
     create: false
@@ -43,12 +37,12 @@ webserver:
 
 config:
   webserver:
-    expose_config: "True"
-    rbac: "False"
-    authenticate: "False"
+    expose_config: True
+    rbac: False
+    authenticate: False
 
   kubernetes:
-    delete_worker_pods: "False"
+    delete_worker_pods: False
 
 scheduler:
   serviceAccount:
