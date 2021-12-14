@@ -1,23 +1,23 @@
 # Provider Variables
-variable "aws_region" {
-  description = "AWS Region"
-}
-
-variable "k8_cluster_endpoint" {
+variable "kubernetes_cluster_endpoint" {
   description = "Kubernetes cluster endpoint."
 }
 
-variable "k8_cluster_ca_certificate" {
+variable "kubernetes_cluster_ca_certificate" {
   description = "Kubernetes cluster CA certificate (base64 encoded)."
 }
 
-variable "k8_cluster_token" {
+variable "kubernetes_cluster_token" {
   description = "Kubernetes cluster auth token."
 }
 
-variable "k8_namespace" {
+variable "kubernetes_namespace" {
   description = "Kubernetes namespace for Meltano and Airflow."
   default = "meltano"
+}
+
+variable "aws_region" {
+  description = "AWS Region for default env vars."
 }
 
 # Meltano Variables

@@ -1,5 +1,5 @@
 provider "aws" {
-  region = local.region
+  region = var.region
 }
 
 data "aws_eks_cluster" "eks" {

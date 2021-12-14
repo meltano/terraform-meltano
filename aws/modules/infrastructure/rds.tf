@@ -63,22 +63,6 @@ module "db" {
   options = []
 }
 
-locals {
-  meltano_db_credentials = {
-    host     = module.db.db_instance_endpoint
-    port     = module.db.db_instance_port
-    user     = module.db.db_instance_username
-    password = module.db.db_instance_password
-    database = module.db.db_instance_name
-    url      = "postgresql://${module.db.db_instance_username}:${module.db.db_instance_password}@${module.db.db_instance_endpoint}/${module.db.db_instance_name}"
-  }
-}
-
-resource "aws_ssm_parameter" "meltano_db_credentials" {
-  name  = "/prod/meltano/db_credentials"
-  type  = "SecureString"
-  value = jsonencode(local.meltano_db_credentials)
-}
 
 module "airflow_db" {
   source  = "terraform-aws-modules/rds/aws"
@@ -127,18 +111,22 @@ module "airflow_db" {
   options = []
 }
 
+
 locals {
-  airflow_db_credentials = {
+  airflow_database = {
     host     = module.airflow_db.db_instance_address
     port     = module.airflow_db.db_instance_port
     user     = module.airflow_db.db_instance_username
     password = module.airflow_db.db_instance_password
     database = module.airflow_db.db_instance_name
+    url      = "postgresql://${module.airflow_db.db_instance_username}:${module.airflow_db.db_instance_password}@${module.airflow_db.db_instance_endpoint}/${module.airflow_db.db_instance_name}"
   }
-}
-
-resource "aws_ssm_parameter" "airflow_db" {
-  name  = "/prod/meltano/airflow/db_credentials"
-  type  = "SecureString"
-  value = jsonencode(local.airflow_db_credentials)
+  meltano_database = {
+    host     = module.db.db_instance_endpoint
+    port     = module.db.db_instance_port
+    user     = module.db.db_instance_username
+    password = module.db.db_instance_password
+    database = module.db.db_instance_name
+    url      = "postgresql://${module.db.db_instance_username}:${module.db.db_instance_password}@${module.db.db_instance_endpoint}/${module.db.db_instance_name}"
+  }
 }

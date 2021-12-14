@@ -65,7 +65,7 @@ EOT
 
 resource "helm_release" "airflow" {
   name        = "airflow"
-  namespace   = var.k8_namespace
+  namespace   = var.kubernetes_namespace
   repository  = "https://airflow.apache.org"
   chart       = "airflow"
   version     = "1.3.0"
