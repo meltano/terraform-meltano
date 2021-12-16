@@ -18,7 +18,7 @@ variable "kubernetes_namespace" {
 
 variable "aws_region" {
   description = "AWS Region for default env vars."
-  default = "us-east-1"
+  default     = "us-east-1"
 }
 
 # Meltano Variables
@@ -38,6 +38,7 @@ variable "meltano_image_tag" {
 variable "meltano_env_file" {
   type        = string
   description = "Meltano .env file contents."
+  default     = ""
 }
 
 # Airflow Variables
