@@ -1,0 +1,116 @@
+# Airflow version (Used to make some decisions based on Airflow Version being deployed)
+airflowVersion: "2.2.2"
+
+fernetKey: "${fernet_key}"
+webserverSecretKey: "${webserver_secret_key}"
+
+executor: KubernetesExecutor
+
+defaultAirflowRepository: "${image_repository_url}"
+defaultAirflowTag: "${image_tag}"
+
+images:
+  airflow:
+    pullPolicy: Always
+  pod_template:
+    pullPolicy: Always
+
+labels:
+  released_at: "${released_at}"
+
+extraEnv: |-
+  - name: AWS_REGION
+    value: ${aws_region}
+  - name: AWS_DEFAULT_REGION
+    value: ${aws_region}
+  - name: MELTANO_IMAGE_REPOSITORY_URL
+    value: "${meltano_image_repository_url}"
+  - name: MELTANO_IMAGE_TAG
+    value: "${meltano_image_tag}"
+  - name: MELTANO_NAMESPACE
+    value: ${meltano_namespace}
+
+data:
+  metadataConnection:
+    host: "${host}"
+    user: "${user}"
+    pass: "${password}"
+    db: "${database}"
+    port: ${port}
+    protocol: "${protocol}"
+    sslmode: disable
+
+config:
+  webserver:
+    expose_config: True
+    rbac: False
+    authenticate: False
+
+  kubernetes:
+    delete_worker_pods: True
+
+webserver:
+  replicas: 1
+
+  webserverConfig: |-
+    AUTH_ROLE_PUBLIC = 'Admin'
+
+  serviceAccount:
+    create: false
+    name: default
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 1.25Gi
+
+scheduler:
+  serviceAccount:
+    create: false
+    name: default
+
+  replicas: 1
+  podDisruptionBudget:
+    enabled: true
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: 2
+      memory: 768Mi
+
+logs:
+  persistence:
+    enabled: true
+    existingClaim: "${logs_pvc_claim_name}"
+
+ingress:
+  enabled: false
+
+postgresql:
+  enabled: false
+
+workers:
+  serviceAccount:
+    create: false
+    name: default
+
+statsd:
+  serviceAccount:
+    create: false
+    name: default
+
+cleanup:
+  serviceAccount:
+    create: false
+    name: default
+
+createUserJob:
+  serviceAccount:
+    create: false
+    name: default
