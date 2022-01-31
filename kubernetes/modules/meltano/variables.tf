@@ -100,3 +100,26 @@ variable "airflow_logs_pvc_claim_name" {
   description = "Airflow logs Persistent Volume Claim name."
   default     = "efs-claim"
 }
+
+variable "superset_db_host" {
+  description = "Superset database host."
+}
+
+variable "superset_db_user" {
+  description = "Superset database username."
+  default     = "superset"
+}
+
+variable "superset_db_password" {
+  description = "Superset database password."
+}
+
+variable "superset_db_database" {
+  description = "Superset database name."
+  default     = "superset"
+}
+
+variable "superset_db_port" {
+  description = "Superset database port."
+  default     = "5432"
+}

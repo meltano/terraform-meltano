@@ -32,7 +32,7 @@ module "eks" {
   worker_groups = [
     {
       instance_type                 = "t3.small"
-      asg_max_size                  = 4
+      asg_max_size                  = 5
       asg_desired_capacity          = 2
       additional_security_group_ids = [module.eks_worker_additional_security_group.security_group_id]
       subnets                       = module.vpc.private_subnets

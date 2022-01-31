@@ -112,6 +112,53 @@ module "airflow_db" {
 }
 
 
+module "superset_db" {
+  source  = "terraform-aws-modules/rds/aws"
+  version = "~> 3.0"
+
+  identifier = "supersetdb"
+
+  engine            = "postgres"
+  engine_version    = "13.4"
+  instance_class    = "db.t4g.micro"
+  allocated_storage = 10
+
+  name                                = "superset"
+  username                            = "superset"
+  port                                = local.rds_port
+  create_random_password              = true
+  iam_database_authentication_enabled = false
+
+  vpc_security_group_ids = [module.db_security_group.security_group_id]
+
+  maintenance_window = "Sun:00:00-Sun:03:00"
+  backup_window      = "03:00-06:00"
+
+  # Enhanced Monitoring
+  create_monitoring_role = false
+
+  tags = {
+    GitlabRepo = "squared"
+    GitlabOrg  = "meltano"
+  }
+
+  # DB subnet group
+  subnet_ids = module.vpc.private_subnets
+
+  # DB parameter group
+  family = "postgres13"
+
+  # DB option group
+  major_engine_version = "13.4"
+
+  # Database Deletion Protection
+  deletion_protection = true
+
+  parameters = []
+
+  options = []
+}
+
 locals {
   airflow_database = {
     host     = module.airflow_db.db_instance_address
@@ -130,5 +177,14 @@ locals {
     database = module.db.db_instance_name
     protocol = "postgresql"
     url      = "postgresql://${module.db.db_instance_username}:${module.db.db_instance_password}@${module.db.db_instance_endpoint}/${module.db.db_instance_name}"
+  }
+  superset_database = {
+    host     = module.superset_db.db_instance_address
+    port     = module.superset_db.db_instance_port
+    user     = module.superset_db.db_instance_username
+    password = module.superset_db.db_instance_password
+    database = module.superset_db.db_instance_name
+    protocol = "postgresql"
+    url      = "postgresql://${module.superset_db.db_instance_username}:${module.superset_db.db_instance_password}@${module.superset_db.db_instance_endpoint}/${module.superset_db.db_instance_name}"
   }
 }

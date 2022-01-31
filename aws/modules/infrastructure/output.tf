@@ -22,3 +22,7 @@ output "airflow_registry" {
 output "meltano_registry" {
   value = local.meltano_registry
 }
+
+output "superset_database" {
+  value = local.superset_database
+}
