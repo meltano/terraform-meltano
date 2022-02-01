@@ -1,0 +1,328 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# Default values for superset.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+# User ID directive. This user must have enough permissions to run the bootstrap script
+# Runn containers as root is not recommended in production. Change this to another UID - e.g. 1000 to be more secure
+runAsUser: 0
+
+# Create custom service account for Superset. If create: true and name is not provided, superset.fullname will be used.
+# serviceAccountName: superset
+serviceAccount:
+  create: false
+
+# Install additional packages and do any other bootstrap configuration in this script
+# For production clusters it's recommended to build own image with this step done in CI
+bootstrapScript: |
+  #!/bin/bash
+  rm -rf /var/lib/apt/lists/* && \
+  pip install \
+    psycopg2-binary==2.9.1 \
+    redis==3.5.3 \
+    ${dependencies} && \
+  if [ ! -f ~/bootstrap ]; then echo "Running Superset with uid {{ .Values.runAsUser }}" > ~/bootstrap; fi
+
+## The name of the secret which we will use to generate a superset_config.py file
+## Note: this secret must have the key superset_config.py in it and can include other files as well
+##
+configFromSecret: '{{ template "superset.fullname" . }}-config'
+
+## The name of the secret which we will use to populate env vars in deployed pods
+## This can be useful for secret keys, etc.
+##
+envFromSecret: '{{ template "superset.fullname" . }}-env'
+## This can be a list of template strings
+envFromSecrets: []
+
+## Extra environment variables that will be passed into pods
+##
+extraEnv:
+  # The 'released_at' label is a way to force helm_release to deploy new containers every time for Meltano.
+  # Without this, helm_release only updates the release if the chart version (in Chart.yaml) has been updated.
+  RELEASE_TS: "ts_${released_at}"
+
+## Extra environment variables in RAW format that will be passed into pods
+##
+extraEnvRaw: []
+
+## Extra environment variables to pass as secrets
+##
+extraSecretEnv: {}
+
+extraConfigs: {}
+
+extraSecrets: {}
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+# A dictionary of overrides to append at the end of superset_config.py - the name does not matter
+# WARNING: the order is not guaranteed
+configOverrides:
+  # Note: Set this to allow import/export script
+  my_override: |
+    DATA_CACHE_CONFIG = {
+        'CACHE_TYPE': 'redis',
+        'CACHE_DEFAULT_TIMEOUT': 60 * 60 * 24, # 1 day default (in secs)
+        'CACHE_KEY_PREFIX': 'superset_results',
+        'CACHE_REDIS_URL': 'redis://{{ template "superset.fullname" . }}-redis-headless:6379/0',
+    }
+
+# Same as above but the values are files
+configOverridesFiles: {}
+
+configMountPath: "/app/pythonpath"
+
+extraConfigMountPath: "/app/configs"
+
+image:
+  repository: apache/superset
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+
+service:
+  type: ClusterIP
+  port: 8088
+  annotations: {}
+    # cloud.google.com/load-balancer-type: "Internal"
+  loadBalancerIP: null
+
+ingress:
+  enabled: false
+  # ingressClassName: nginx
+  annotations: {}
+  path: /
+  pathType: ImplementationSpecific
+  hosts:
+    - chart-example.local
+  tls: []
+
+resources: {}
+
+##
+## Custom hostAliases for all superset pods
+## https://kubernetes.io/docs/tasks/network/customize-hosts-file-for-pods/
+hostAliases: []
+
+
+##
+## Superset node configuration
+supersetNode:
+  command:
+    - "/bin/sh"
+    - "-c"
+    - ". {{ .Values.configMountPath }}/superset_bootstrap.sh; /usr/bin/run-server.sh"
+  connections:
+    redis_host: '{{ template "superset.fullname" . }}-redis-headless'
+    redis_port: "6379"
+    db_host: "${host}"
+    db_port: "${port}"
+    db_user: "${user}"
+    db_pass: "${password}"
+    db_name: "${database}"
+  env: {}
+  forceReload: false # If true, forces deployment to reload on each upgrade
+  initContainers:
+    - name: wait-for-postgres
+      image: busybox:latest
+      imagePullPolicy: IfNotPresent
+      envFrom:
+        - secretRef:
+            name: '{{ tpl .Values.envFromSecret . }}'
+      command: [ "/bin/sh", "-c", "until nc -zv $DB_HOST $DB_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+  ## Annotations to be added to supersetNode deployment
+  deploymentAnnotations: {}
+  ## Annotations to be added to supersetNode pods
+  podAnnotations: {}
+
+##
+## Superset worker configuration
+supersetWorker:
+  command:
+    - "/bin/sh"
+    - "-c"
+    - ". {{ .Values.configMountPath }}/superset_bootstrap.sh; celery --app=superset.tasks.celery_app:app worker"
+  forceReload: false # If true, forces deployment to reload on each upgrade
+  initContainers:
+    - name: wait-for-postgres
+      image: busybox:latest
+      imagePullPolicy: IfNotPresent
+      envFrom:
+        - secretRef:
+            name: '{{ tpl .Values.envFromSecret . }}'
+      command: [ "/bin/sh", "-c", "until nc -zv $DB_HOST $DB_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+  ## Annotations to be added to supersetWorker deployment
+  deploymentAnnotations: {}
+  ## Annotations to be added to supersetWorker pods
+  podAnnotations: {}
+
+##
+## Superset beat configuration (to trigger scheduled jobs like reports)
+supersetCeleryBeat:
+  # This is only required if you intend to use alerts and reports
+  enabled: false
+  command:
+    - "/bin/sh"
+    - "-c"
+    - ". {{ .Values.configMountPath }}/superset_bootstrap.sh; celery --app=superset.tasks.celery_app:app beat --pidfile /tmp/celerybeat.pid --schedule /tmp/celerybeat-schedule"
+  forceReload: false # If true, forces deployment to reload on each upgrade
+  initContainers:
+    - name: wait-for-postgres
+      image: busybox:latest
+      imagePullPolicy: IfNotPresent
+      envFrom:
+        - secretRef:
+            name: '{{ tpl .Values.envFromSecret . }}'
+      command: [ "/bin/sh", "-c", "until nc -zv $DB_HOST $DB_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+  ## Annotations to be added to supersetCeleryBeat deployment
+  deploymentAnnotations: {}
+  ## Annotations to be added to supersetCeleryBeat pods
+  podAnnotations: {}
+
+##
+## Init job configuration
+init:
+  # Configure resources
+  # Warning: fab command consumes a lot of ram and can
+  # cause the process to be killed due to OOM if it exceeds limit
+  resources:
+    requests:
+      cpu: 50m
+      memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 1.25Gi
+  command:
+    - "/bin/sh"
+    - "-c"
+    - ". {{ .Values.configMountPath }}/superset_bootstrap.sh; . {{ .Values.configMountPath }}/superset_init.sh"
+  enabled: true
+  loadExamples: false
+  createAdmin: true
+  adminUser:
+    username: admin
+    firstname: Superset
+    lastname: Admin
+    email: admin@superset.com
+    password: "${admin_password}"
+  initContainers:
+    - name: wait-for-postgres
+      image: busybox:latest
+      imagePullPolicy: IfNotPresent
+      envFrom:
+        - secretRef:
+            name: '{{ tpl .Values.envFromSecret . }}'
+      command: [ "/bin/sh", "-c", "until nc -zv $DB_HOST $DB_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+  initscript: |-
+    #!/bin/sh
+    set -eu
+    echo "Upgrading DB schema..."
+    superset db upgrade
+    echo "Initializing roles..."
+    superset init
+    {{ if .Values.init.createAdmin }}
+    echo "Creating admin user..."
+    superset fab create-admin \
+                    --username {{ .Values.init.adminUser.username }} \
+                    --firstname {{ .Values.init.adminUser.firstname }} \
+                    --lastname {{ .Values.init.adminUser.lastname }} \
+                    --email {{ .Values.init.adminUser.email }} \
+                    --password {{ .Values.init.adminUser.password }} \
+                    || true
+    {{- end }}
+    {{ if .Values.init.loadExamples }}
+    echo "Loading examples..."
+    superset load_examples
+    {{- end }}
+    if [ -f "{{ .Values.extraConfigMountPath }}/import_datasources.yaml" ]; then
+      echo "Importing database connections.... "
+      superset import_datasources -p {{ .Values.extraConfigMountPath }}/import_datasources.yaml
+    fi
+  ## Annotations to be added to init job pods
+  podAnnotations: {}
+
+##
+## Configuration values for the postgresql dependency.
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+postgresql:
+  ##
+  ## Use the PostgreSQL chart dependency.
+  ## Set to false if bringing your own PostgreSQL.
+  enabled: false
+
+
+## Configuration values for the Redis dependency.
+## ref: https://github.com/kubernetes/charts/blob/master/stable/redis/README.md
+redis:
+  ##
+  ## Use the redis chart dependency.
+  ## Set to false if bringing your own redis.
+  enabled: true
+  usePassword: false
+  ##
+  ## The name of an existing secret that contains the redis password.
+  existingSecret:
+  ## Name of the key containing the secret.
+  existingSecretKey: redis-password
+  ##
+  ## If you are bringing your own redis, you can set the host in redisHost.
+  ## redisHost:
+  ##
+  ## Redis password
+  ##
+  password: superset
+  ##
+  ## Master configuration
+  master:
+    ##
+    ## Image configuration
+    # image:
+      ##
+      ## docker registry secret names (list)
+      # pullSecrets: nil
+    ##
+    ## Configure persistance
+    persistence:
+      ##
+      ## Use a PVC to persist data.
+      enabled: false
+      ##
+      ## Persistant class
+      # storageClass: classname
+      ##
+      ## Access mode:
+      accessModes:
+      - ReadWriteOnce
+  ##
+  ## Disable cluster management by default.
+  cluster:
+    enabled: false
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
