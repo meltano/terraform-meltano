@@ -37,7 +37,8 @@ bootstrapScript: |
   rm -rf /var/lib/apt/lists/* && \
   pip install \
     psycopg2-binary==2.9.1 \
-    redis==3.5.3 && \
+    redis==3.5.3 \
+    ${dependencies} && \
   if [ ! -f ~/bootstrap ]; then echo "Running Superset with uid {{ .Values.runAsUser }}" > ~/bootstrap; fi
 
 ## The name of the secret which we will use to generate a superset_config.py file
@@ -54,7 +55,10 @@ envFromSecrets: []
 
 ## Extra environment variables that will be passed into pods
 ##
-extraEnv: {}
+extraEnv:
+  # The 'released_at' label is a way to force helm_release to deploy new containers every time for Meltano.
+  # Without this, helm_release only updates the release if the chart version (in Chart.yaml) has been updated.
+  RELEASE_TS: "ts_${released_at}"
 
 ## Extra environment variables in RAW format that will be passed into pods
 ##
@@ -74,7 +78,15 @@ extraVolumeMounts: []
 
 # A dictionary of overrides to append at the end of superset_config.py - the name does not matter
 # WARNING: the order is not guaranteed
-configOverrides: {}
+configOverrides:
+  # Note: Set this to allow import/export script
+  my_override: |
+    DATA_CACHE_CONFIG = {
+        'CACHE_TYPE': 'redis',
+        'CACHE_DEFAULT_TIMEOUT': 60 * 60 * 24, # 1 day default (in secs)
+        'CACHE_KEY_PREFIX': 'superset_results',
+        'CACHE_REDIS_URL': 'redis://{{ template "superset.fullname" . }}-redis-headless:6379/0',
+    }
 
 # Same as above but the values are files
 configOverridesFiles: {}
@@ -215,7 +227,7 @@ init:
     firstname: Superset
     lastname: Admin
     email: admin@superset.com
-    password: admin
+    password: "${admin_password}"
   initContainers:
     - name: wait-for-postgres
       image: busybox:latest

@@ -123,3 +123,11 @@ variable "superset_db_port" {
   description = "Superset database port."
   default     = "5432"
 }
+
+variable "superset_admin_password" {
+  description = "Superset admin password."
+}
+
+variable "superset_dependencies" {
+  description = "Superset python dependencies to install."
+}
