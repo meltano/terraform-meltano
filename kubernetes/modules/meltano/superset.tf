@@ -1,9 +1,5 @@
 locals {
   superset_values = {
-    # database_uri         = var.meltano_db_uri
-    # image_repository_url = var.meltano_image_repository_url
-    # image_tag            = var.meltano_image_tag
-    # b64_env_file         = base64encode(var.meltano_env_file)
     host                 = var.superset_db_host
     user                 = var.superset_db_user
     password             = var.superset_db_password
