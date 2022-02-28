@@ -38,3 +38,13 @@ module "vpc" {
     GithubOrg  = "terraform-aws-modules"
   }
 }
+
+locals {
+  vpc = {
+    name = local.name
+    cidr = local.vpc_cidr
+    vpc_id = module.vpc.vpc_id
+    public_subnets = module.vpc.public_subnets
+    private_subnets = module.vpc.private_subnets
+  }
+}

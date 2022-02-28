@@ -90,7 +90,12 @@ logs:
     existingClaim: "${logs_pvc_claim_name}"
 
 ingress:
-  enabled: false
+  enabled: true
+  web:
+    ingressClassName: alb
+    annotations:
+      "alb.ingress.kubernetes.io/scheme": internal
+      "alb.ingress.kubernetes.io/target-type": ip
 
 postgresql:
   enabled: false
