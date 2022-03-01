@@ -131,3 +131,7 @@ variable "superset_admin_password" {
 variable "superset_dependencies" {
   description = "Superset python dependencies to install."
 }
+
+variable "superset_webserver_host" {
+  description = "Superset webserver host for ingress."
+}
