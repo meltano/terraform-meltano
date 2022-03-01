@@ -14,6 +14,7 @@ locals {
     port                 = var.airflow_db_port
     protocol             = var.airflow_db_protocol
     logs_pvc_claim_name  = var.airflow_logs_pvc_claim_name
+    webserver_base_url   = var.airflow_webserver_base_url
     # meltano operator vars
     aws_region                   = var.aws_region
     meltano_image_repository_url = var.meltano_image_repository_url

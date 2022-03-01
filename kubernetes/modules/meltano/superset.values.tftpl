@@ -130,7 +130,7 @@ ingress:
   path: "/*"
   # pathType: ImplementationSpecific
   hosts:
-   - "internal-095a2699-meltano-superset-608a-2127736714.us-east-1.elb.amazonaws.com"
+   - "${webserver_host}"
   # tls: []
 
 resources: {}

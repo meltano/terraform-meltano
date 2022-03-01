@@ -45,7 +45,7 @@ config:
     expose_config: True
     rbac: False
     authenticate: False
-    base_url: "http://internal-095a2699-meltano-airflowai-4cc5-561943628.us-east-1.elb.amazonaws.com/airflow"
+    base_url: "${webserver_base_url}"
 
   kubernetes:
     delete_worker_pods: True
