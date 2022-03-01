@@ -31,7 +31,7 @@ module "eks" {
 
   worker_groups = [
     {
-      instance_type                 = "t3.small"
+      instance_type                 = "t3.medium"
       asg_max_size                  = 8
       asg_desired_capacity          = 6
       additional_security_group_ids = [module.eks_worker_additional_security_group.security_group_id]

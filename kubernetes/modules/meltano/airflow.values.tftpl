@@ -45,6 +45,7 @@ config:
     expose_config: True
     rbac: False
     authenticate: False
+    base_url: "http://internal-095a2699-meltano-airflowai-4cc5-561943628.us-east-1.elb.amazonaws.com/airflow"
 
   kubernetes:
     delete_worker_pods: True
@@ -92,10 +93,21 @@ logs:
 ingress:
   enabled: true
   web:
-    ingressClassName: alb
     annotations:
-      "alb.ingress.kubernetes.io/scheme": internal
-      "alb.ingress.kubernetes.io/target-type": ip
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/scheme: internal
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/group.name: meltano
+      # Health Check Settings
+      alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+      alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+      alb.ingress.kubernetes.io/healthcheck-path: /health
+      alb.ingress.kubernetes.io/healthcheck-interval-seconds: '15'
+      alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '5'
+      alb.ingress.kubernetes.io/success-codes: '200'
+      alb.ingress.kubernetes.io/healthy-threshold-count: '2'
+      alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
+    path: "/airflow/*"
 
 postgresql:
   enabled: false
