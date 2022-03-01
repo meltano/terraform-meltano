@@ -4,14 +4,15 @@ locals {
     image_repository_url = var.meltano_image_repository_url
     image_tag            = var.meltano_image_tag
     b64_env_file         = base64encode(var.meltano_env_file)
+    ingress_enabled      = "true"
   }
 }
 
 resource "helm_release" "meltano" {
   name       = "meltano"
-  repository = "https://meltano.gitlab.io/infra/helm-meltano/meltano"
-  chart      = "meltano"
-  # chart = "../../../infrastructure/helm-meltano/meltano"
+  # repository = "https://meltano.gitlab.io/infra/helm-meltano/meltano"
+  # chart      = "meltano"
+  chart = "../../../infrastructure/helm-meltano/meltano-ui"
   namespace = "meltano"
   version   = "0.2.0"
   wait      = false
