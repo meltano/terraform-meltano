@@ -50,10 +50,6 @@ variable "airflow_webserver_secret_key" {
   description = "Airflow webserver secret key."
 }
 
-variable "airflow_webserver_base_url" {
-  description = "Airflow webserver base URL."
-}
-
 variable "airflow_meltano_project_root" {
   description = "Meltano project root in Airflow container."
   default     = "/opt/airflow/meltano"

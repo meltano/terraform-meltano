@@ -10,11 +10,11 @@ locals {
 
 resource "helm_release" "meltano" {
   name       = "meltano"
-  # repository = "https://meltano.gitlab.io/infra/helm-meltano/meltano"
-  # chart      = "meltano"
-  chart = "../../../infrastructure/helm-meltano/meltano-ui"
+  repository = "https://meltano.gitlab.io/infra/helm-meltano/meltano-ui"
+  chart      = "meltano-ui"
+  # chart = "../../../infrastructure/helm-meltano/meltano-ui"
   namespace = "meltano"
-  version   = "0.2.0"
+  version   = "0.3.0"
   wait      = false
   values = [
     templatefile("${path.module}/meltano.values.tftpl", local.meltano_values)
