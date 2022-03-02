@@ -26,3 +26,7 @@ output "meltano_registry" {
 output "superset_database" {
   value = local.superset_database
 }
+
+output "vpc" {
+  value = local.vpc
+}

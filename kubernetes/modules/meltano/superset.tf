@@ -10,6 +10,7 @@ locals {
     port                 = var.superset_db_port
     admin_password       = var.superset_admin_password
     dependencies         = var.superset_dependencies
+    webserver_host       = var.superset_webserver_host
   }
 }
 

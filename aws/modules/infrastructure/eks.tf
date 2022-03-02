@@ -31,9 +31,9 @@ module "eks" {
 
   worker_groups = [
     {
-      instance_type                 = "t3.small"
-      asg_max_size                  = 5
-      asg_desired_capacity          = 2
+      instance_type                 = "t3.medium"
+      asg_max_size                  = 8
+      asg_desired_capacity          = 6
       additional_security_group_ids = [module.eks_worker_additional_security_group.security_group_id]
       subnets                       = module.vpc.private_subnets
     }
@@ -85,6 +85,17 @@ resource "helm_release" "aws_efs_pvc" {
     module.efs, module.eks_efs_csi_driver
   ]
 }
+
+
+module "alb-ingress-controller" {
+  source  = "iplabs/alb-ingress-controller/kubernetes"
+  version = "3.4.0"
+  aws_region_name = var.aws_region
+  aws_vpc_id = module.vpc.vpc_id
+  k8s_cluster_name = module.eks.cluster_id
+  k8s_cluster_type = "eks"
+}
+
 
 locals {
   kubernetes_cluster = {
