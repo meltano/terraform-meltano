@@ -15,7 +15,7 @@ module "efs" {
   ]
 }
 
-resource "aws_efs_file_system_policy" "efs-policy" {
+resource "aws_efs_file_system_policy" "efs_policy" {
   file_system_id                     = module.efs.id
   bypass_policy_lockout_safety_check = true
   policy                             = <<POLICY
