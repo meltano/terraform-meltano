@@ -1,6 +1,6 @@
 # terraform
 
-Terreform modules to support the deployment of Meltano. As per our [blog post](https://meltano.com/blog/deploying-meltano-for-meltano), the following modules are designed to be complimentary.
+Terraform modules to support the deployment of Meltano. As per our [blog post](https://meltano.com/blog/deploying-meltano-for-meltano), the following modules are designed to be complimentary.
 
 We also recommend checking out our [Meltano Squared](https://gitlab.com/meltano/squared) project where we use these modules to deploy Meltano for Meltano (get it?).
 
