@@ -12,7 +12,7 @@ Full details in the modules [README.md](aws/modules/infrastructure/README.md)
 
 ## `kubernetes/modules/meltano`
 
-Terraform module to a containerised Meltano Project onto infrastructure provisioned by the `aws/modules/infrastructure` module in this repository. Included are Helm deployments of Meltano (the Meltano UI), Airflow and Superset.
+Terraform module to deploy a containerised Meltano Project onto infrastructure provisioned by the `aws/modules/infrastructure` module in this repository. Included are Helm deployments of Meltano (the Meltano UI), Airflow and Superset.
 
 In all three cases, external Helm charts are used:
 
