@@ -1,3 +1,3 @@
 locals {
-  name = "eks-${random_string.suffix.result}"
+  name = "meltano-${var.environment}-${random_string.suffix.result}"
 }
