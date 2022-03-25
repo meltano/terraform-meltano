@@ -2,10 +2,29 @@ repos:
 - repo: https://github.com/gruntwork-io/pre-commit
   rev: v0.1.17 # Get the latest from: https://github.com/gruntwork-io/pre-commit/releases
   hooks:
+    # aws/modules/infrastructure
     - id: tflint
-      args:
-        - "--module"
-        - "--deep"
-        - "--config=.tflint.hcl"
-    - id: terraform-validate
+      name: tflint aws/modules/infrastructure
+      files: ^aws/modules/infrastructure/(.*).tf$
+      exclude: \.+.terraform\/.*$
     - id: terraform-fmt
+      name: terraform fmt aws/modules/infrastructure
+      files: ^aws/modules/infrastructure/(.*).tf$
+      exclude: \.+.terraform\/.*$
+    - id: terraform-validate
+      name: terraform validate aws/modules/infrastructure
+      files: ^aws/modules/infrastructure/(.*).tf$
+      exclude: \.+.terraform\/.*$
+    # kubernetes/modules/meltano
+    - id: tflint
+      name: tflint kubernetes/modules/meltano
+      files: ^kubernetes/modules/meltano/(.*).tf$
+      exclude: \.+.terraform\/.*$
+    - id: terraform-fmt
+      name: terraform fmt kubernetes/modules/meltano
+      files: ^kubernetes/modules/meltano/(.*).tf$
+      exclude: \.+.terraform\/.*$
+    - id: terraform-validate
+      name: terraform validate kubernetes/modules/meltano
+      files: ^kubernetes/modules/meltano/(.*).tf$
+      exclude: \.+.terraform\/.*$
