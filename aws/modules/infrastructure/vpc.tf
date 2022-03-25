@@ -6,9 +6,9 @@ module "vpc" {
   version = "~> 3.0"
 
   name            = local.name
-  cidr            = var.vpc.cidr
-  private_subnets = var.vpc.private_subnets
-  public_subnets  = var.vpc.public_subnets
+  cidr            = var.vpc_cidr
+  private_subnets = var.vpc_private_subnets
+  public_subnets  = var.vpc_public_subnets
   azs             = data.aws_availability_zones.available.names
 
   enable_nat_gateway         = true
@@ -39,7 +39,7 @@ module "vpc" {
 locals {
   vpc = {
     name            = local.name
-    cidr            = var.vpc.cidr
+    cidr            = var.vpc_cidr
     vpc_id          = module.vpc.vpc_id
     public_subnets  = module.vpc.public_subnets
     private_subnets = module.vpc.private_subnets

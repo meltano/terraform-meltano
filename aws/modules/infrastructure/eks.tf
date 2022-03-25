@@ -21,8 +21,8 @@ module "eks" {
   version = "17.23.0"
 
   cluster_name    = local.name
-  cluster_version = var.eks.cluster_version
-  tags            = var.eks.cluster_tags
+  cluster_version = var.eks_cluster_version
+  tags            = var.eks_cluster_tags
 
   vpc_id  = module.vpc.vpc_id
   subnets = concat(module.vpc.public_subnets, module.vpc.private_subnets)
@@ -32,9 +32,9 @@ module "eks" {
 
   worker_groups = [
     {
-      instance_type                 = var.eks.worker_group_instance_type
-      asg_max_size                  = var.eks.worker_group_asg_max_size
-      asg_desired_capacity          = var.eks.worker_group_asg_desired_capacity
+      instance_type                 = var.eks_worker_group_instance_type
+      asg_max_size                  = var.eks_worker_group_asg_max_size
+      asg_desired_capacity          = var.eks_worker_group_asg_desired_capacity
       additional_security_group_ids = [module.eks_worker_additional_security_group.security_group_id]
       subnets                       = module.vpc.private_subnets
     }
@@ -49,7 +49,7 @@ module "eks" {
 
 resource "kubernetes_namespace" "namespace" {
   metadata {
-    name = var.eks.namespace_name
+    name = var.eks_namespace_name
   }
   depends_on = [module.eks]
 }
@@ -96,7 +96,7 @@ module "alb_ingress_controller" {
 
 locals {
   kubernetes_cluster = {
-    namespace                                        = var.eks.namespace_name
+    namespace                                        = var.eks_namespace_name
     cloudwatch_log_group_arn                         = module.eks.cloudwatch_log_group_arn
     cloudwatch_log_group_name                        = module.eks.cloudwatch_log_group_name
     cluster_arn                                      = module.eks.cluster_arn

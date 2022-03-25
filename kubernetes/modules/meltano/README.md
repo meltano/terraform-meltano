@@ -1,3 +1,4 @@
+<!-- BEGIN_TF_DOCS -->
 # Meltano Project Module
 
 Terraform module to deploy a containerised Meltano Project onto infrastructure provisioned by the `aws/modules/infrastructure` module in this repository. Included are Helm deployments of Meltano (the Meltano UI), Airflow and Superset.
@@ -81,59 +82,64 @@ The full example use can be found in our [Squared](https://gitlab.com/meltano/sq
 
 | Name | Version |
 |------|---------|
-| Terraform | >= 1.0.5 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | 2.4.1 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.6.1 |
+| <a name="requirement_local"></a> [local](#requirement\_local) | 2.1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| hashicorp/local | 2.1.0 |
-| hashicorp/kubernetes | 2.6.1 |
-| hashicorp/helm | 2.4.1 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.4.1 |
+
+## Modules
+
+No modules.
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| helm_release.airflow | resource |
-| helm_release.meltano | resource |
-| helm_release.superset | resource |
+| [helm_release.airflow](https://registry.terraform.io/providers/hashicorp/helm/2.4.1/docs/resources/release) | resource |
+| [helm_release.meltano](https://registry.terraform.io/providers/hashicorp/helm/2.4.1/docs/resources/release) | resource |
+| [helm_release.superset](https://registry.terraform.io/providers/hashicorp/helm/2.4.1/docs/resources/release) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| aws_region | AWS Region to deploy to. | `string` | us-east-1 | no |
-| kubernetes_cluster_endpoint | Kubernetes cluster endpoint | `string` | | yes |
-| kubernetes_cluster_ca_certificate | Kubernetes cluster CA certificate (base64 encoded). | `string` | | yes |
-| kubernetes_cluster_token | Kubernetes cluster auth token. | `string` |  | yes |
-| kubernetes_namespace | Kubernetes namespace for Meltano, Airflow and Superset. | `string` | meltano | no |
-| meltano_db_uri | Meltano database uri. | `string` | | yes |
-| meltano_image_repository_url | Meltano container image repository url. | `string` | | yes |
-| meltano_image_tag | Meltano container image tag. | `string` | latest | no |
-| meltano_env_file | Meltano .env file contents. | `string` | | no |
-| airflow_fernet_key | Airflow Fernet key. | `string` | | yes |
-| airflow_webserver_secret_key | Airflow webserver secret key. | `string` | | yes |
-| airflow_meltano_project_root | Meltano project root in Airflow container. | `string` | /opt/airflow/meltano | no |
-| airflow_image_repository_url | Airflow container image repository url. | `string` | | yes |
-| airflow_image_tag | Airflow container image tag. | `string` | latest | no |
-| airflow_db_host | Airflow database host. | `string` | | yes |
-| airflow_db_user | Airflow database username. | `string` | airflow | no |
-| airflow_db_password | Airflow database password. | `string` |  | yes |
-| airflow_db_database | Airflow database name. | `string` | airflow | no |
-| airflow_db_port | Airflow database port. | `string` | "5432" | no |
-| airflow_db_protocol | Airflow database protocol. | `string` | postgresql | no |
-| airflow_db_uri | Airflow database connection string. | `string` | | yes |
-| airflow_logs_pvc_claim_name | Airflow logs Persistent Volume Claim name. | `string` | efs-claim | no |
-| superset_db_host | Superset database host. | `string` | | yes |
-| superset_db_user | Superset database username. | `string` | superset | no |
-| superset_db_password | Superset database password. | `string` | | yes |
-| superset_db_database | Superset database name. | `string` | superset | no |
-| superset_db_port | Superset database port. | `string` | "5432" | no |
-| superset_admin_password | Superset admin password. | `string` | | yes |
-| superset_dependencies | Superset python dependencies to install. | `string` | | yes |
-| superset_webserver_host | Superset webserver host for ingress. | `string` | | yes |
+| <a name="input_airflow_db_database"></a> [airflow\_db\_database](#input\_airflow\_db\_database) | Airflow database name. | `string` | `"airflow"` | no |
+| <a name="input_airflow_db_host"></a> [airflow\_db\_host](#input\_airflow\_db\_host) | Airflow database host. | `string` | n/a | yes |
+| <a name="input_airflow_db_password"></a> [airflow\_db\_password](#input\_airflow\_db\_password) | Airflow database password. | `string` | n/a | yes |
+| <a name="input_airflow_db_port"></a> [airflow\_db\_port](#input\_airflow\_db\_port) | Airflow database port. | `string` | `"5432"` | no |
+| <a name="input_airflow_db_protocol"></a> [airflow\_db\_protocol](#input\_airflow\_db\_protocol) | Airflow database protocol. | `string` | `"postgresql"` | no |
+| <a name="input_airflow_db_uri"></a> [airflow\_db\_uri](#input\_airflow\_db\_uri) | Airflow database connection string. | `string` | n/a | yes |
+| <a name="input_airflow_db_user"></a> [airflow\_db\_user](#input\_airflow\_db\_user) | Airflow database username. | `string` | `"airflow"` | no |
+| <a name="input_airflow_fernet_key"></a> [airflow\_fernet\_key](#input\_airflow\_fernet\_key) | Airflow Fernet key. | `string` | n/a | yes |
+| <a name="input_airflow_image_repository_url"></a> [airflow\_image\_repository\_url](#input\_airflow\_image\_repository\_url) | Airflow container image repository url. | `string` | n/a | yes |
+| <a name="input_airflow_image_tag"></a> [airflow\_image\_tag](#input\_airflow\_image\_tag) | Airflow container image tag. | `string` | `"latest"` | no |
+| <a name="input_airflow_logs_pvc_claim_name"></a> [airflow\_logs\_pvc\_claim\_name](#input\_airflow\_logs\_pvc\_claim\_name) | Airflow logs Persistent Volume Claim name. | `string` | `"efs-claim"` | no |
+| <a name="input_airflow_meltano_project_root"></a> [airflow\_meltano\_project\_root](#input\_airflow\_meltano\_project\_root) | Meltano project root in Airflow container. | `string` | `"/opt/airflow/meltano"` | no |
+| <a name="input_airflow_webserver_secret_key"></a> [airflow\_webserver\_secret\_key](#input\_airflow\_webserver\_secret\_key) | Airflow webserver secret key. | `string` | n/a | yes |
+| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS Region to deploy to. | `string` | `"us-east-1"` | no |
+| <a name="input_kubernetes_cluster_ca_certificate"></a> [kubernetes\_cluster\_ca\_certificate](#input\_kubernetes\_cluster\_ca\_certificate) | Kubernetes cluster CA certificate (base64 encoded). | `string` | n/a | yes |
+| <a name="input_kubernetes_cluster_endpoint"></a> [kubernetes\_cluster\_endpoint](#input\_kubernetes\_cluster\_endpoint) | Kubernetes cluster endpoint. | `string` | n/a | yes |
+| <a name="input_kubernetes_cluster_token"></a> [kubernetes\_cluster\_token](#input\_kubernetes\_cluster\_token) | Kubernetes cluster auth token. | `string` | n/a | yes |
+| <a name="input_kubernetes_namespace"></a> [kubernetes\_namespace](#input\_kubernetes\_namespace) | Kubernetes namespace for Meltano, Airflow and Superset. | `string` | `"meltano"` | no |
+| <a name="input_meltano_db_uri"></a> [meltano\_db\_uri](#input\_meltano\_db\_uri) | Meltano database uri. | `string` | n/a | yes |
+| <a name="input_meltano_env_file"></a> [meltano\_env\_file](#input\_meltano\_env\_file) | Meltano .env file contents. | `string` | `""` | no |
+| <a name="input_meltano_image_repository_url"></a> [meltano\_image\_repository\_url](#input\_meltano\_image\_repository\_url) | Meltano container image repository url. | `string` | n/a | yes |
+| <a name="input_meltano_image_tag"></a> [meltano\_image\_tag](#input\_meltano\_image\_tag) | Meltano container image tag. | `string` | `"latest"` | no |
+| <a name="input_superset_admin_password"></a> [superset\_admin\_password](#input\_superset\_admin\_password) | Superset admin password. | `string` | n/a | yes |
+| <a name="input_superset_db_database"></a> [superset\_db\_database](#input\_superset\_db\_database) | Superset database name. | `string` | `"superset"` | no |
+| <a name="input_superset_db_host"></a> [superset\_db\_host](#input\_superset\_db\_host) | Superset database host. | `string` | n/a | yes |
+| <a name="input_superset_db_password"></a> [superset\_db\_password](#input\_superset\_db\_password) | Superset database password. | `string` | n/a | yes |
+| <a name="input_superset_db_port"></a> [superset\_db\_port](#input\_superset\_db\_port) | Superset database port. | `string` | `"5432"` | no |
+| <a name="input_superset_db_user"></a> [superset\_db\_user](#input\_superset\_db\_user) | Superset database username. | `string` | `"superset"` | no |
+| <a name="input_superset_dependencies"></a> [superset\_dependencies](#input\_superset\_dependencies) | Superset python dependencies to install. | `string` | n/a | yes |
+| <a name="input_superset_webserver_host"></a> [superset\_webserver\_host](#input\_superset\_webserver\_host) | Superset webserver host for ingress. | `string` | n/a | yes |
 
 ## Outputs
 
-None.
+No outputs.
+<!-- END_TF_DOCS -->
