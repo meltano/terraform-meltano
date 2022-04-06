@@ -3,11 +3,11 @@ module "db_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "4.7.0"
 
-  name        = "meltano_db_security_group"
-  description = "Security group for Meltano platform RDS database"
+  name        = "meltano_${var.meltano_environment}_db_security_group"
+  description = "${var.meltano_environment} security group for Meltano platform RDS database"
   vpc_id      = module.vpc.vpc_id
 
-  ingress_cidr_blocks = [local.vpc_cidr]
+  ingress_cidr_blocks = [var.vpc_cidr]
   ingress_with_source_security_group_id = [
     {
       rule                     = "postgresql-tcp"
@@ -20,31 +20,28 @@ module "db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~> 3.0"
 
-  identifier = "meltanodb"
+  identifier = "meltanodb-${var.meltano_environment}"
 
   engine            = "postgres"
   engine_version    = "13.4"
-  instance_class    = "db.t4g.micro"
-  allocated_storage = 10
+  instance_class    = var.rds_meltano_database_instance_class
+  allocated_storage = var.rds_meltano_database_allocated_storage
 
   name                                = "meltano"
   username                            = "meltano"
-  port                                = local.rds_port
+  port                                = var.rds_meltano_database_port
   create_random_password              = true
   iam_database_authentication_enabled = false
 
   vpc_security_group_ids = [module.db_security_group.security_group_id]
 
-  maintenance_window = "Sun:00:00-Sun:03:00"
-  backup_window      = "03:00-06:00"
+  maintenance_window = var.rds_maintenance_window
+  backup_window      = var.rds_backup_window
 
   # Enhanced Monitoring
   create_monitoring_role = false
 
-  tags = {
-    GitlabRepo = "squared"
-    GitlabOrg  = "meltano"
-  }
+  tags = var.rds_tags
 
   # DB subnet group
   subnet_ids = module.vpc.private_subnets
@@ -56,7 +53,7 @@ module "db" {
   major_engine_version = "13.4"
 
   # Database Deletion Protection
-  deletion_protection = true
+  deletion_protection = var.rds_deletion_protection
 
   parameters = []
 
@@ -68,31 +65,28 @@ module "airflow_db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~> 3.0"
 
-  identifier = "airflowdb"
+  identifier = "airflowdb-${var.meltano_environment}"
 
   engine            = "postgres"
   engine_version    = "13.4"
-  instance_class    = "db.t4g.micro"
-  allocated_storage = 10
+  instance_class    = var.rds_airflow_database_instance_class
+  allocated_storage = var.rds_airflow_database_allocated_storage
 
   name                                = "airflow"
   username                            = "airflow"
-  port                                = local.rds_port
+  port                                = var.rds_airflow_database_port
   create_random_password              = true
   iam_database_authentication_enabled = false
 
   vpc_security_group_ids = [module.db_security_group.security_group_id]
 
-  maintenance_window = "Sun:00:00-Sun:03:00"
-  backup_window      = "03:00-06:00"
+  maintenance_window = var.rds_maintenance_window
+  backup_window      = var.rds_backup_window
 
   # Enhanced Monitoring
   create_monitoring_role = false
 
-  tags = {
-    GitlabRepo = "squared"
-    GitlabOrg  = "meltano"
-  }
+  tags = var.rds_tags
 
   # DB subnet group
   subnet_ids = module.vpc.private_subnets
@@ -104,7 +98,7 @@ module "airflow_db" {
   major_engine_version = "13.4"
 
   # Database Deletion Protection
-  deletion_protection = true
+  deletion_protection = var.rds_deletion_protection
 
   parameters = []
 
@@ -116,31 +110,28 @@ module "superset_db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~> 3.0"
 
-  identifier = "supersetdb"
+  identifier = "supersetdb-${var.meltano_environment}"
 
   engine            = "postgres"
   engine_version    = "13.4"
-  instance_class    = "db.t4g.micro"
-  allocated_storage = 10
+  instance_class    = var.rds_superset_database_instance_class
+  allocated_storage = var.rds_superset_database_allocated_storage
 
   name                                = "superset"
   username                            = "superset"
-  port                                = local.rds_port
+  port                                = var.rds_superset_database_port
   create_random_password              = true
   iam_database_authentication_enabled = false
 
   vpc_security_group_ids = [module.db_security_group.security_group_id]
 
-  maintenance_window = "Sun:00:00-Sun:03:00"
-  backup_window      = "03:00-06:00"
+  maintenance_window = var.rds_maintenance_window
+  backup_window      = var.rds_backup_window
 
   # Enhanced Monitoring
   create_monitoring_role = false
 
-  tags = {
-    GitlabRepo = "squared"
-    GitlabOrg  = "meltano"
-  }
+  tags = var.rds_tags
 
   # DB subnet group
   subnet_ids = module.vpc.private_subnets
@@ -152,7 +143,7 @@ module "superset_db" {
   major_engine_version = "13.4"
 
   # Database Deletion Protection
-  deletion_protection = true
+  deletion_protection = var.rds_deletion_protection
 
   parameters = []
 
