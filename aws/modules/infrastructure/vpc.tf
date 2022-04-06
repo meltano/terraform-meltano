@@ -5,7 +5,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
 
-  name            = local.name
+  name            = "meltano-${var.meltano_environment}"
   cidr            = var.vpc_cidr
   private_subnets = var.vpc_private_subnets
   public_subnets  = var.vpc_public_subnets
@@ -20,17 +20,16 @@ module "vpc" {
   enable_dns_support   = true
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = "1"
+    "kubernetes.io/cluster/meltano-${var.meltano_environment}" = "shared"
+    "kubernetes.io/role/elb"                                   = "1"
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = "1"
+    "kubernetes.io/cluster/meltano-${var.meltano_environment}" = "shared"
+    "kubernetes.io/role/internal-elb"                          = "1"
   }
 
   tags = {
-    Example    = local.name
     GithubRepo = "terraform-aws-eks"
     GithubOrg  = "terraform-aws-modules"
   }
@@ -38,7 +37,7 @@ module "vpc" {
 
 locals {
   vpc = {
-    name            = local.name
+    name            = "meltano-${var.meltano_environment}"
     cidr            = var.vpc_cidr
     vpc_id          = module.vpc.vpc_id
     public_subnets  = module.vpc.public_subnets

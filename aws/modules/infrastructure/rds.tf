@@ -3,8 +3,8 @@ module "db_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "4.7.0"
 
-  name        = "meltano_db_security_group"
-  description = "Security group for Meltano platform RDS database"
+  name        = "meltano_${var.meltano_environment}_db_security_group"
+  description = "${var.meltano_environment} security group for Meltano platform RDS database"
   vpc_id      = module.vpc.vpc_id
 
   ingress_cidr_blocks = [var.vpc_cidr]
@@ -20,7 +20,7 @@ module "db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~> 3.0"
 
-  identifier = "meltanodb"
+  identifier = "meltanodb-${var.meltano_environment}"
 
   engine            = "postgres"
   engine_version    = "13.4"
@@ -65,7 +65,7 @@ module "airflow_db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~> 3.0"
 
-  identifier = "airflowdb"
+  identifier = "airflowdb-${var.meltano_environment}"
 
   engine            = "postgres"
   engine_version    = "13.4"
@@ -110,7 +110,7 @@ module "superset_db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~> 3.0"
 
-  identifier = "supersetdb"
+  identifier = "supersetdb-${var.meltano_environment}"
 
   engine            = "postgres"
   engine_version    = "13.4"

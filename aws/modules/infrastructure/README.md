@@ -99,7 +99,7 @@ module "infrastructure" {
 | <a name="input_eks_worker_group_asg_desired_capacity"></a> [eks\_worker\_group\_asg\_desired\_capacity](#input\_eks\_worker\_group\_asg\_desired\_capacity) | EKS worker group asg desired capacity. | `number` | `6` | no |
 | <a name="input_eks_worker_group_asg_max_size"></a> [eks\_worker\_group\_asg\_max\_size](#input\_eks\_worker\_group\_asg\_max\_size) | EKS worker group asg max size. | `number` | `8` | no |
 | <a name="input_eks_worker_group_instance_type"></a> [eks\_worker\_group\_instance\_type](#input\_eks\_worker\_group\_instance\_type) | EKS worker group instance type. | `string` | `"t3.medium"` | no |
-| <a name="input_environment"></a> [environment](#input\_environment) | Meltano Environment name. | `string` | `"staging"` | no |
+| <a name="input_meltano_environment"></a> [meltano\_environment](#input\_meltano\_environment) | Meltano Environment name. | `string` | `"staging"` | no |
 | <a name="input_rds_airflow_database_allocated_storage"></a> [rds\_airflow\_database\_allocated\_storage](#input\_rds\_airflow\_database\_allocated\_storage) | RDS Airflow database allocated storage. | `number` | `10` | no |
 | <a name="input_rds_airflow_database_instance_class"></a> [rds\_airflow\_database\_instance\_class](#input\_rds\_airflow\_database\_instance\_class) | RDS Airflow database instance class. | `string` | `"db.t4g.micro"` | no |
 | <a name="input_rds_airflow_database_port"></a> [rds\_airflow\_database\_port](#input\_rds\_airflow\_database\_port) | RDS Airflow database port. | `number` | `5432` | no |

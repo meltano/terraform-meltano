@@ -3,7 +3,7 @@ module "eks_worker_additional_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "4.7.0"
 
-  name        = "eks_worker_additional_security_group"
+  name        = "${var.meltano_environment}_eks_worker_additional_security_group"
   description = "Security group for Meltano platform EKS Workers"
   vpc_id      = module.vpc.vpc_id
 
@@ -20,7 +20,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "17.23.0"
 
-  cluster_name    = local.name
+  cluster_name    = "meltano-${var.meltano_environment}"
   cluster_version = var.eks_cluster_version
   tags            = var.eks_cluster_tags
 

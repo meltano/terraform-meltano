@@ -17,7 +17,7 @@ To update each modules `README.md` after making changes, we must run `terraform-
 
 ```sh
 cd aws/modules/infrastructure
-terraform-docs markdown table --output-file README.md .
+terraform-docs .
 ```
 
-This will update the readme file at `aws/modules/infrastructure/README.md` with any changes made to the module.
+This will replace the readme file at `aws/modules/infrastructure/README.md` with any changes made to the module and header docs.
