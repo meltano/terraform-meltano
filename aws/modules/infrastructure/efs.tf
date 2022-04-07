@@ -3,7 +3,7 @@ module "efs" {
   source    = "cloudposse/efs/aws"
   version   = "0.32.2"
   namespace = "m5o"
-  stage     = "prod"
+  stage     = var.meltano_environment
   name      = "meltano"
   region    = var.aws_region
   vpc_id    = module.vpc.vpc_id
@@ -15,13 +15,13 @@ module "efs" {
   ]
 }
 
-resource "aws_efs_file_system_policy" "efs-policy" {
+resource "aws_efs_file_system_policy" "efs_policy" {
   file_system_id                     = module.efs.id
   bypass_policy_lockout_safety_check = true
   policy                             = <<POLICY
 {
     "Version": "2012-10-17",
-    "Id": "EfsFsPolicy",
+    "Id": "${var.meltano_environment}-EfsFsPolicy",
     "Statement": [
         {
             "Sid": "efs-fs-policy",

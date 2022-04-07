@@ -2,7 +2,7 @@ module "ecr_airflow" {
   source               = "cloudposse/ecr/aws"
   version              = "0.32.3"
   namespace            = "m5o"
-  stage                = "prod"
+  stage                = var.meltano_environment
   name                 = "airflow"
   image_tag_mutability = "MUTABLE" # for "latest"
   principals_full_access = [
@@ -15,7 +15,7 @@ module "ecr_meltano" {
   source               = "cloudposse/ecr/aws"
   version              = "0.32.3"
   namespace            = "m5o"
-  stage                = "prod"
+  stage                = var.meltano_environment
   name                 = "meltano"
   image_tag_mutability = "MUTABLE" # for "latest"
   principals_full_access = [
