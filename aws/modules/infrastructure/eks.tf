@@ -3,7 +3,7 @@ module "eks_worker_additional_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "4.7.0"
 
-  name        = "eks_worker_additional_security_group"
+  name        = "${var.meltano_environment}_eks_worker_additional_security_group"
   description = "Security group for Meltano platform EKS Workers"
   vpc_id      = module.vpc.vpc_id
 
@@ -20,8 +20,9 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "17.23.0"
 
-  cluster_name    = local.name
-  cluster_version = local.cluster_version
+  cluster_name    = "meltano-${var.meltano_environment}"
+  cluster_version = var.eks_cluster_version
+  tags            = var.eks_cluster_tags
 
   vpc_id  = module.vpc.vpc_id
   subnets = concat(module.vpc.public_subnets, module.vpc.private_subnets)
@@ -31,9 +32,9 @@ module "eks" {
 
   worker_groups = [
     {
-      instance_type                 = "t3.medium"
-      asg_max_size                  = 8
-      asg_desired_capacity          = 6
+      instance_type                 = var.eks_worker_group_instance_type
+      asg_max_size                  = var.eks_worker_group_asg_max_size
+      asg_desired_capacity          = var.eks_worker_group_asg_desired_capacity
       additional_security_group_ids = [module.eks_worker_additional_security_group.security_group_id]
       subnets                       = module.vpc.private_subnets
     }
@@ -44,15 +45,11 @@ module "eks" {
   manage_aws_auth = true
   enable_irsa     = true
 
-  tags = {
-    GitlabRepo = "squared"
-    GitlabOrg  = "meltano"
-  }
 }
 
-resource "kubernetes_namespace" "meltano" {
+resource "kubernetes_namespace" "namespace" {
   metadata {
-    name = "meltano"
+    name = var.eks_namespace_name
   }
   depends_on = [module.eks]
 }
@@ -87,11 +84,11 @@ resource "helm_release" "aws_efs_pvc" {
 }
 
 
-module "alb-ingress-controller" {
-  source  = "iplabs/alb-ingress-controller/kubernetes"
-  version = "3.4.0"
-  aws_region_name = var.aws_region
-  aws_vpc_id = module.vpc.vpc_id
+module "alb_ingress_controller" {
+  source           = "iplabs/alb-ingress-controller/kubernetes"
+  version          = "3.4.0"
+  aws_region_name  = var.aws_region
+  aws_vpc_id       = module.vpc.vpc_id
   k8s_cluster_name = module.eks.cluster_id
   k8s_cluster_type = "eks"
 }
@@ -99,7 +96,7 @@ module "alb-ingress-controller" {
 
 locals {
   kubernetes_cluster = {
-    namespace                                        = var.kubernetes_namespace
+    namespace                                        = var.eks_namespace_name
     cloudwatch_log_group_arn                         = module.eks.cloudwatch_log_group_arn
     cloudwatch_log_group_name                        = module.eks.cloudwatch_log_group_name
     cluster_arn                                      = module.eks.cluster_arn
