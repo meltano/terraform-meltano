@@ -122,6 +122,12 @@ variable "airflow_logs_pvc_claim_name" {
   type        = string
 }
 
+variable "superset_chart_version" {
+  description = "Superset Helm chart version."
+  default     = "0.5.3"
+  type        = string
+}
+
 variable "superset_db_host" {
   description = "Superset database host."
   type        = string

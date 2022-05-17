@@ -19,7 +19,7 @@ resource "helm_release" "superset" {
   namespace  = var.kubernetes_namespace
   repository = "https://apache.github.io/superset"
   chart      = "superset"
-  version    = "0.5.3"
+  version    = var.superset_chart_version
   wait       = false
   values = [
     templatefile("${path.module}/superset.values.tftpl", local.superset_values)
