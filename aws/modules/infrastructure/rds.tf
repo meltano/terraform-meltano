@@ -23,7 +23,7 @@ module "db" {
   identifier = "meltanodb"
 
   engine            = "postgres"
-  engine_version    = "13.4"
+  engine_version    = "13.7"
   instance_class    = "db.t4g.micro"
   allocated_storage = 10
 
@@ -53,7 +53,7 @@ module "db" {
   family = "postgres13"
 
   # DB option group
-  major_engine_version = "13.4"
+  major_engine_version = "13.7"
 
   # Database Deletion Protection
   deletion_protection = true
@@ -71,7 +71,7 @@ module "airflow_db" {
   identifier = "airflowdb"
 
   engine            = "postgres"
-  engine_version    = "13.4"
+  engine_version    = "13.7"
   instance_class    = "db.t4g.micro"
   allocated_storage = 10
 
@@ -101,7 +101,7 @@ module "airflow_db" {
   family = "postgres13"
 
   # DB option group
-  major_engine_version = "13.4"
+  major_engine_version = "13.7"
 
   # Database Deletion Protection
   deletion_protection = true
@@ -119,7 +119,7 @@ module "superset_db" {
   identifier = "supersetdb"
 
   engine            = "postgres"
-  engine_version    = "13.4"
+  engine_version    = "13.7"
   instance_class    = "db.t4g.micro"
   allocated_storage = 10
 
@@ -149,7 +149,7 @@ module "superset_db" {
   family = "postgres13"
 
   # DB option group
-  major_engine_version = "13.4"
+  major_engine_version = "13.7"
 
   # Database Deletion Protection
   deletion_protection = true
